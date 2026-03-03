@@ -1,0 +1,33 @@
+# ── Web Framework ──────────────────────────
+fastapi==0.115.0
+uvicorn==0.30.6
+python-multipart==0.0.9
+
+# ── Database ───────────────────────────────
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.9
+
+# ── Authentication ─────────────────────────
+python-jose==3.3.0
+passlib==1.7.4
+bcrypt==4.0.1
+
+# ── Image Processing ───────────────────────
+opencv-python==4.10.0.84
+Pillow==10.4.0
+imagehash==4.3.1
+scikit-image==0.24.0
+
+# ── PDF Handling ───────────────────────────
+pdf2image==1.17.0
+
+# ── Bulk Upload ────────────────────────────
+pandas==2.2.2
+openpyxl==3.1.5
+
+# ── Configuration ──────────────────────────
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+
+# ── Utilities ──────────────────────────────
+aiofiles==24.1.0

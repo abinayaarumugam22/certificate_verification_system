@@ -1,1 +1,26 @@
-venv/ 
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Database
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Uploads (don't push certificate images)
+static/uploads/
+static/qrcodes/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
