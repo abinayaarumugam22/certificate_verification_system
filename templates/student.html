@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Dashboard — TN Cert Verify</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#C9A84C;--gold2:#E8C96A;--deep:#0A1628;--navy:#0D2144;--cream:#F5EDD6;--white:#FDFAF4;--error:#E05252;--success:#52C97A;}
+body{background:var(--deep);color:var(--cream);font-family:'Crimson Pro',serif;min-height:100vh;}
+.bg-grid{position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);
+  background-size:50px 50px;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;z-index:10;
+  background:rgba(8,18,34,0.97);border-right:1px solid rgba(201,168,76,0.15);
+  display:flex;flex-direction:column;padding:32px 0;}
+.sidebar-logo{padding:0 28px 32px;border-bottom:1px solid rgba(201,168,76,0.1);}
+.sidebar-brand{font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);}
+.sidebar-role{font-size:13px;color:rgba(245,237,214,0.4);margin-top:4px;}
+.sidebar-nav{flex:1;padding:24px 0;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:14px 28px;cursor:pointer;
+  transition:all 0.3s;border-left:3px solid transparent;
+  color:rgba(245,237,214,0.5);font-size:15px;}
+.nav-item:hover{color:var(--cream);background:rgba(201,168,76,0.05);}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,168,76,0.08);}
+.sidebar-footer{padding:24px 28px;border-top:1px solid rgba(201,168,76,0.1);}
+.user-name{font-size:14px;color:var(--cream);}
+.user-role-badge{font-size:11px;color:var(--gold);letter-spacing:1px;}
+.btn-logout{width:100%;margin-top:12px;background:transparent;border:1px solid rgba(201,168,76,0.2);
+  color:rgba(245,237,214,0.5);padding:10px;border-radius:2px;cursor:pointer;
+  font-family:'Crimson Pro',serif;font-size:13px;letter-spacing:1px;transition:all 0.3s;}
+.btn-logout:hover{border-color:var(--error);color:var(--error);}
+.main{margin-left:260px;position:relative;z-index:1;min-height:100vh;}
+.topbar{padding:24px 40px;border-bottom:1px solid rgba(201,168,76,0.1);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,22,40,0.5);}
+.page-title{font-family:'Cinzel',serif;font-size:20px;color:var(--white);}
+.page-subtitle{font-size:13px;color:rgba(245,237,214,0.4);margin-top:2px;}
+.content{padding:40px;max-width:800px;}
+.card{background:rgba(13,33,68,0.6);border:1px solid rgba(201,168,76,0.15);
+  border-radius:2px;padding:32px;margin-bottom:24px;}
+.card-title{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);
+  margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(201,168,76,0.1);}
+.form-group{margin-bottom:20px;}
+label{display:block;font-size:11px;letter-spacing:2px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:8px;}
+input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.2);
+  border-radius:2px;padding:14px 16px;color:var(--cream);font-family:'Crimson Pro',serif;
+  font-size:16px;transition:all 0.3s;outline:none;}
+input:focus{border-color:var(--gold);}
+input::placeholder{color:rgba(245,237,214,0.3);}
+.btn{padding:14px 32px;border-radius:2px;cursor:pointer;font-family:'Cinzel',serif;
+  font-size:12px;letter-spacing:2px;font-weight:700;transition:all 0.3s;border:none;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--deep);}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,0.3);}
+.msg{padding:14px 18px;border-radius:2px;font-size:14px;margin-bottom:20px;display:none;}
+.msg.error{background:rgba(224,82,82,0.1);border:1px solid rgba(224,82,82,0.3);color:#E05252;}
+.msg.success{background:rgba(82,201,122,0.1);border:1px solid rgba(82,201,122,0.3);color:#52C97A;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.info-field{background:rgba(255,255,255,0.03);padding:16px;border-radius:2px;
+  border:1px solid rgba(201,168,76,0.1);}
+.info-label{font-size:11px;letter-spacing:2px;color:rgba(245,237,214,0.4);
+  text-transform:uppercase;margin-bottom:6px;}
+.info-value{font-size:17px;color:var(--cream);}
+.cert-status{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(82,201,122,0.1);border:1px solid rgba(82,201,122,0.3);
+  color:var(--success);padding:10px 20px;border-radius:40px;font-size:14px;margin-top:16px;}
+.not-found{text-align:center;padding:48px;color:rgba(245,237,214,0.4);}
+.not-found-icon{font-size:48px;margin-bottom:16px;display:block;}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-brand">TN CERT VERIFY</div>
+    <div class="sidebar-role">Student Portal</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="nav-item active">
+      <span>🎓</span> My Certificate
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-name" id="userName">Student</div>
+    <div class="user-role-badge">STUDENT</div>
+    <button class="btn-logout" onclick="logout()">SIGN OUT</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">My Certificate</div>
+      <div class="page-subtitle">View your registered certificate details</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">🔍 Look Up Certificate</div>
+      <div id="stuMsg" class="msg"></div>
+      <div class="form-group">
+        <label>Your Register Number</label>
+        <input type="text" id="stuRegNum" placeholder="Enter your register number"/>
+      </div>
+      <button class="btn btn-gold" onclick="lookupCertificate()">VIEW CERTIFICATE</button>
+    </div>
+
+    <div class="card" id="certCard" style="display:none;">
+      <div class="card-title">📄 Certificate Details</div>
+      <div class="info-grid" id="certGrid"></div>
+      <div class="cert-status">✅ Certificate Registered &amp; Verified</div>
+    </div>
+
+    <div id="notFound" class="card" style="display:none;">
+      <div class="not-found">
+        <span class="not-found-icon">📭</span>
+        <div style="font-family:'Cinzel',serif;font-size:18px;color:var(--cream);margin-bottom:8px">Not Found</div>
+        <div>No certificate found for this register number.<br/>Please contact your institution.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+window.onload = () => {
+  const token = localStorage.getItem('token');
+  if(!token){ window.location.href='login.html'; return; }
+  document.getElementById('userName').textContent = localStorage.getItem('name')||'Student';
+};
+
+async function lookupCertificate(){
+  const reg = document.getElementById('stuRegNum').value.trim();
+  if(!reg){ 
+    const el=document.getElementById('stuMsg');
+    el.className='msg error';el.textContent='Please enter your register number';el.style.display='block';
+    return; 
+  }
+  try {
+    const res  = await fetch(`${API}/admin/certificates?limit=1000`,
+      {headers:{Authorization:`Bearer ${localStorage.getItem('token')}`}});
+    const data = await res.json();
+    const cert = data.data?.find(c=>c.register_number===reg);
+
+    document.getElementById('certCard').style.display='none';
+    document.getElementById('notFound').style.display='none';
+
+    if(!cert){
+      document.getElementById('notFound').style.display='block';
+      return;
+    }
+    document.getElementById('certCard').style.display='block';
+    document.getElementById('certGrid').innerHTML = `
+      <div class="info-field">
+        <div class="info-label">Student Name</div>
+        <div class="info-value">${cert.student_name}</div>
+      </div>
+      <div class="info-field">
+        <div class="info-label">Register Number</div>
+        <div class="info-value">${cert.register_number}</div>
+      </div>
+      <div class="info-field">
+        <div class="info-label">Certificate ID</div>
+        <div class="info-value" style="font-family:monospace;font-size:14px">${cert.certificate_id}</div>
+      </div>
+      <div class="info-field">
+        <div class="info-label">Issue Date</div>
+        <div class="info-value">${cert.issue_date}</div>
+      </div>
+    `;
+  } catch(e){
+    const el=document.getElementById('stuMsg');
+    el.className='msg error';el.textContent='Connection error';el.style.display='block';
+  }
+}
+
+function logout(){ localStorage.clear(); window.location.href='login.html'; }
+</script>
+</body>
+</html>
